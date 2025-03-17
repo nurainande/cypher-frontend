@@ -1,4 +1,4 @@
-import IphoneImage from './Iphone-image.png';
+import IphoneImage from './Iphone-Image.png';
 import EarjamImage from './earjam.png';
 import MacbookImage from './Macbook.png';
 import PlaystationImage from './PlayStation.png';
