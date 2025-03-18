@@ -1,24 +1,85 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 const OrderConfirmationPage = () => {
-  const orderDetails = {
-    orderNumber: "123456789",
+  const {id} = useParams()
+  const [orderDetailss, setOrderDetailss] = useState({
+    orderNumber: "",
     shippingAddress: {
-      name: "John Doe",
-      addressLine1: "123 Main St",
-      addressLine2: "Apt 4B",
-      city: "New York",
-      state: "NY",
-      zip: "10001",
-      country: "USA",
+      name: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
     },
     items: [
-      { name: "Product 1", quantity: 2, price: 20 },
-      { name: "Product 2", quantity: 1, price: 50 },
-      { name: "Product 3", quantity: 3, price: 10 },
+      
     ],
-    totalCost: 130,
-  };
+    totalCost: 0,
+  });
+  // const orderDetails = {
+  //   orderNumber: "123456789",
+  //   shippingAddress: {
+  //     name: "John Doe",
+  //     addressLine1: "123 Main St",
+  //     addressLine2: "Apt 4B",
+  //     city: "New York",
+  //     state: "NY",
+  //     zip: "10001",
+  //     country: "USA",
+  //   },
+  //   items: [
+  //     { name: "Product 1", quantity: 2, price: 20 },
+  //     { name: "Product 2", quantity: 1, price: 50 },
+  //     { name: "Product 3", quantity: 3, price: 10 },
+  //   ],
+  //   totalCost: 130,
+  // };
+
+  async function fetchOrders() {
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_SERVER_DOMAIN
+        }/api/v1/order/my-orders/${id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const data = await res.json();
+      console.log(data.data);
+  
+      if (data.success) {
+        setOrderDetailss({
+          orderNumber: data.data._id,
+          shippingAddress: {
+            name: "",
+            addressLine1: "",
+            addressLine2: "",
+            city: "",
+            state: "",
+            zip: "",
+            country: "",
+          },
+          items: data.data.productDetails,
+          totalCost: data.data.totalAmount,
+        });
+        console.log(orderDetailss)
+      } else {
+        console.error(data.error);
+      }
+    }
+  
+    useEffect(() => {
+     fetchOrders()
+    }, [])
+    // useEffect(() => {
+    //   fetchOrders();
+    // }, []);
+    
+
 
   return (
     <section className="p-8 md:p-16 bg-gray-50 min-h-screen">
@@ -30,11 +91,12 @@ const OrderConfirmationPage = () => {
         {/* Order Number */}
         <p className="text-lg mb-6">
           Thank you for your purchase! Your order number is{" "}
-          <span className="font-semibold">{orderDetails.orderNumber}</span>.
+          <span className="font-semibold">{orderDetailss.orderNumber}</span>.
         </p>
 
-        {/* Shipping Address */}
-        <div className="mb-8">
+        {/*==== Shipping Address =====*/}
+
+        {/* <div className="mb-8">
           <h2 className="text-xl font-semibold mb-2">Shipping Address</h2>
           <p>{orderDetails.shippingAddress.name}</p>
           <p>{orderDetails.shippingAddress.addressLine1}</p>
@@ -45,7 +107,7 @@ const OrderConfirmationPage = () => {
             {orderDetails.shippingAddress.zip},{" "}
             {orderDetails.shippingAddress.country}
           </p>
-        </div>
+        </div> */}
 
         {/* Order Summary */}
         <div className="mb-8">
@@ -59,11 +121,11 @@ const OrderConfirmationPage = () => {
               </tr>
             </thead>
             <tbody>
-              {orderDetails.items.map((item, index) => (
+              {orderDetailss.items.map((item, index) => (
                 <tr key={index} className="border-b">
                   <td className="py-2">{item.name}</td>
                   <td className="py-2">{item.quantity}</td>
-                  <td className="py-2">${item.price.toFixed(2)}</td>
+                  <td className="py-2">₦{item.price.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -72,7 +134,7 @@ const OrderConfirmationPage = () => {
 
         {/* Total Cost */}
         <div className="text-xl font-semibold mt-6">
-          Total: ${orderDetails.totalCost.toFixed(2)}
+          Total: ₦{orderDetailss.totalCost.toFixed(2)}
         </div>
 
         {/* Continue Shopping */}

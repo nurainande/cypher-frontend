@@ -2,6 +2,7 @@
 import  { useState } from "react";
 import { useAppContext } from "../Context/ContextProvider";
 import { loadStripe } from "@stripe/stripe-js";
+import { toast } from "react-hot-toast";
 
 const stripeKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
 console.log(stripeKey);
@@ -63,6 +64,13 @@ const CheckoutPage = () => {
     console.log('PaymentResponse', responseData)
     if (responseData?.id) {
       stripePromise.redirectToCheckout({ sessionId: responseData.id });
+    }
+
+    // my input
+    else{
+      console.log(responseData.message)
+      // handle error or display message
+      toast.error(responseData.message)
     }
   }
   // Sample data for cart items

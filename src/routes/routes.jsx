@@ -56,7 +56,7 @@ const router = createBrowserRouter([
         element: <CancelPayment />,
       },
       {
-        path: "order-details",
+        path: "order-details/:id",
         element: <OrderConfirmationPage />,
       },
       {

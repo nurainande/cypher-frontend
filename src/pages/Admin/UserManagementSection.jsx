@@ -11,10 +11,13 @@ const UserManagementSection = () => {
   const [users, setUsers] = useState([]);
 
   async function fetchUsers(){
-    const res = await fetch("http://127.0.0.1:3000/api/v1/user/all-users",{
-      method: "GET",
-      credentials: "include",
-    })
+    const res = await fetch(
+      `${import.meta.env.VITE_SERVER_DOMAIN}/api/v1/user/all-users`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     const data = await res.json();
 
     if(data.success){
@@ -22,8 +25,7 @@ const UserManagementSection = () => {
     } else {
       console.error(data.error);
     }
-    // console.log(data)
-    // setUsers(data);
+   
   }
 
   // Fetch users from the backend or set initial data
